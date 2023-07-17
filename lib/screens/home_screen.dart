@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_books/value/colour.dart';
-import 'package:toggle_switch/toggle_switch.dart';
-
 import '../components/my_components.dart';
 import 'books_screen.dart';
 
@@ -14,7 +12,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool? _isChecked = false;
+  bool _isChecked = false;
   int addDelIndex = 0;
   final List<String> _data = [
     "A Handbook of Agile",
@@ -24,6 +22,9 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
 
   List<String> _filteredData = [];
+  bool _sortAscending = true;
+  String _filterText = '';
+
 
   @override
   void initState() {
@@ -53,6 +54,17 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     }
   }
+
+  void _sortData() {
+    setState(() {
+      if (_sortAscending) {
+        _filteredData.sort((a, b) => a.compareTo(b));
+      } else {
+        _filteredData.sort((a, b) => b.compareTo(a));
+      }
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -88,9 +100,9 @@ class _HomeScreenState extends State<HomeScreen> {
                        children: [
                          Checkbox(
                            value: _isChecked,
-                           onChanged: (bool? newValue) {
+                           onChanged: (bool? value) {
                              setState(() {
-                               _isChecked = newValue;
+                               _isChecked = value!;
                              });
                            },
                          ),
@@ -121,8 +133,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           detailButton()
-
-
         ],
       ),
     );
@@ -233,6 +243,7 @@ class _HomeScreenState extends State<HomeScreen> {
       margin: EdgeInsets.only(top: 20),
       padding: EdgeInsets.only(left: 30, right: 30),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
               child: MyTextField(
@@ -244,6 +255,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   contentPadding : ContentPadding(top : 15, left : 20),
                   onChanged : (value) {_filterSearchResults(value);}
               )
+          ),
+          IconButton(
+            icon: Image.asset('assets/images/sort.png'),
+            onPressed: () {
+              _sortAscending ? 'Ascending' : 'Descending';
+              _sortAscending = !_sortAscending;
+              _sortData();
+            },
           ),
 
         ],
